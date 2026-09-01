@@ -17,12 +17,13 @@ export type DealScore = {
 const clamp = (value: number, min = 0, max = 100) => Math.min(max, Math.max(min, value));
 
 /**
- * Evidence-first scoring. We deliberately do not score an offer as a published
- * deal unless it has a valid affiliate URL and a positive price.
+ * Evidence-first scoring. Affiliate approval is intentionally NOT required to
+ * calculate a score, so we can develop and preview the scoring engine before
+ * partner feeds are connected. Publication still requires a real affiliate URL.
  */
 export function calculateDealScore(input: DealInput): DealScore {
-  if (!input.affiliateUrl || input.currentPrice <= 0) {
-    return { score: 0, label: 'Ikke en deal', reasons: ['Mangler aktiv affiliate-lenke'] };
+  if (input.currentPrice <= 0) {
+    return { score: 0, label: 'Ikke en deal', reasons: ['Mangler gyldig pris'] };
   }
 
   let score = 20;
