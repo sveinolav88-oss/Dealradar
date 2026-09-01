@@ -34,7 +34,7 @@ export default function Home() {
             <span className="cta-note">Gratis å bruke · ingen skjulte abonnement</span>
           </div>
 
-          <div className="deal-visual" aria-label="Eksempel på DealRadar Score">
+          <div className="deal-visual" style={{ transform: 'rotate(0deg)' }} aria-label="Eksempel på DealRadar Score">
             <div className="radar-grid"></div>
             <div className="deal-head"><span>EKSEMPEL · DEALRADAR SCORE</span><b>94<em>/100</em></b><div className="stars">★ ★ ★ ★ ◐</div></div>
             <div className="headphone"><div className="ear ear-left"></div><div className="band"></div><div className="ear ear-right"></div></div>
