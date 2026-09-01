@@ -1,6 +1,5 @@
 import { summarizeDeals } from '@/src/lib/admin-metrics'
-import { getPublishableDeals } from '@/src/lib/deal-pipeline'
-import { demoDeals } from '@/lib/demo-deals'
+import { getDemoScore, demoDeals } from '@/lib/demo-deals'
 
 export const metadata = {
   title: 'Control Center | DealRadar',
@@ -8,8 +7,18 @@ export const metadata = {
 }
 
 export default function AdminPage() {
-  const metrics = summarizeDeals(demoDeals as never)
-  const publishable = getPublishableDeals(demoDeals as never)
+  const adminDeals = demoDeals.map((deal) => {
+    const score = getDemoScore(deal)
+    return {
+      score: score.score,
+      publishable: score.score >= 65 && deal.stock === 'in_stock',
+      affiliateUrl: null,
+      inStock: deal.stock === 'in_stock',
+      status: score.score >= 65 ? 'active' as const : 'review' as const,
+    }
+  })
+
+  const metrics = summarizeDeals(adminDeals)
 
   const cards = [
     ['Produkter', metrics.total],
@@ -58,7 +67,7 @@ export default function AdminPage() {
             ['1', 'Velg Partner-ads-programmer med gode feeds'],
             ['2', 'Importer ekte produkter'],
             ['3', 'Bygg historikk før vi roper “deal”'],
-            ['4', `Publiser ${publishable.length} godkjente demo-objekter nå`],
+            ['4', 'Koble på automatisk publisering'],
           ]} />
         </section>
 
