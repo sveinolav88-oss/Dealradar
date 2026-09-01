@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { fetchPartnerAdsFeed } from '@/src/lib/partner-ads'
+import { fetchPartnerAdsFeed } from '../../../../src/lib/partner-ads'
 
 export async function GET() {
   const feedUrl = process.env.PARTNER_ADS_FEED_URL
