@@ -8,7 +8,9 @@ function slugify(value: string) {
   return value.toLowerCase().normalize('NFKD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 90);
 }
 
-export const revalidate = 3600;
+// The live Partner-ads feed must never be fetched while Vercel is building the site.
+// It is external data and should be resolved when /deals is requested.
+export const dynamic = 'force-dynamic';
 
 export default async function DealsPage() {
   let deals: Awaited<ReturnType<typeof getSolarCampDeals>> = [];
