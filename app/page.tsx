@@ -26,18 +26,18 @@ export default function Home() {
     <div className="site">
       <nav className="nav">
         <a className="brand" href="#top" aria-label="DealRadar hjem"><span className="brandmark">◉</span><span>DealRadar</span></a>
-        <div className="navlinks"><a href="#how">Slik fungerer det</a><a href="#categories">Kategorier</a><a href="#score">Deal Score</a><a href="#about">Om oss</a></div>
-        <a className="nav-cta" href="#launch"><span>✦</span> Følg lanseringen</a>
+        <div className="navlinks"><a href="/deals" className="nav-deals">Deals <span>→</span></a><a href="#how">Slik fungerer det</a><a href="#categories">Kategorier</a><a href="#score">Deal Score</a><a href="#about">Om oss</a></div>
+        <a className="nav-cta" href="/deals"><span>✦</span> Se dagens deals</a>
       </nav>
 
       <header className="hero" id="top">
         <div className="hero-inner">
           <div className="hero-copy">
-            <span className="eyebrow">DEALRADAR · LANSERES SNART</span>
+            <span className="eyebrow">DEALRADAR · LIVE DEALS</span>
             <h1>Ikke stol på<br /><span>førprisen.</span></h1>
             <p>Vi bygger DealRadar for én ting: å finne ut om et tilbud faktisk er en god deal. Prisdata, historikk og sammenligning samles i én enkel vurdering.</p>
             <div className="features">{featureIcons.map((f, i) => <div className="feature" key={f.title}><span className={`feature-icon fi-${i}`}>{f.icon}</span><strong>{f.title}</strong><small>{f.text}</small></div>)}</div>
-            <div className="hero-actions"><a className="primary-cta" href="#how"><span>✦</span> Se hvordan det fungerer</a><a className="secondary-cta" href="#score">Hva er Deal Score? ↓</a></div>
+            <div className="hero-actions"><a className="primary-cta" href="/deals"><span>✦</span> Se ekte deals nå</a><a className="secondary-cta" href="#how">Slik fungerer det ↓</a></div>
             <span className="cta-note">Gratis å bruke · ingen skjulte abonnement</span>
           </div>
 
@@ -59,16 +59,16 @@ export default function Home() {
 
         <section className="score-section" id="score"><div className="score-card"><div className="score-copy"><span className="section-kicker">DEALRADAR SCORE</span><h2>Ett tall. Flere datapunkter.</h2><p>Deal Score skal gjøre det lett å skille et reelt prisfall fra et tilbud som bare ser bra ut i reklamen.</p><div className="score-points"><div><b>Pris</b><span>Hvordan dagens pris står mot historikken.</span></div><div><b>Historikk</b><span>Hvor lavt produktet faktisk har vært.</span></div><div><b>Konkurrenter</b><span>Hvordan prisen står mot andre butikker.</span></div></div></div><div className="score-orb"><span>EKSEMPEL</span><strong>94</strong><small>/100</small><em>STERK DEAL</em></div></div></section>
 
-        <section className="categories" id="categories"><div className="section-title left"><span>FINN DIN NESTE DEAL</span><h2>Kategorier</h2><p>Vi starter med kategorier der prisforskjeller ofte betyr mye.</p></div><div className="category-grid">{categories.map((c, i) => <a href="#launch" className="category-card" key={c}><span>{['✦','⌁','⌂','♧','◒','△'][i]}</span><strong>{c}</strong><small>Kommer ved lansering →</small></a>)}</div></section>
+        <section className="categories" id="categories"><div className="section-title left"><span>FINN DIN NESTE DEAL</span><h2>Kategorier</h2><p>Vi starter med kategorier der prisforskjeller ofte betyr mye.</p></div><div className="category-grid">{categories.map((c, i) => <a href="/deals" className="category-card" key={c}><span>{['✦','⌁','⌂','♧','◒','△'][i]}</span><strong>{c}</strong><small>Se tilgjengelige deals →</small></a>)}</div></section>
 
         <section className="principles"><div className="principle-main"><span className="section-kicker">VÅRT LØFTE</span><h2>Vi skal ikke finne flest deals.<br /><span>Vi skal finne de beste.</span></h2><p>Et tilbud er ikke automatisk bra fordi det står «−40 %». DealRadar skal belønne dokumenterte prisfall og være åpen om hva vi vet – og hva vi ikke vet.</p></div><div className="principle-list"><div><span>01</span><b>Data fremfor hype</b><small>Pris og historikk skal veie tyngre enn store prosenttall.</small></div><div><span>02</span><b>Tydelig provisjon</b><small>Affiliate-lenker merkes slik at du vet hvordan vi tjener penger.</small></div><div><span>03</span><b>Færre, bedre deals</b><small>Vi vil heller vise 20 gode enn 200 middelmådige.</small></div></div></section>
 
         <section className="faq"><div className="section-title"><span>SPØRSMÅL</span><h2>Vanlige spørsmål</h2></div><div className="faq-grid">{faqs.map(([q, a]) => <details key={q}><summary>{q}<span>+</span></summary><p>{a}</p></details>)}</div></section>
 
-        <section className="alerts" id="launch"><div className="alert-copy"><span className="pill">LANSERES SNART</span><h2>Første deals er snart klare.</h2><p>Vi kobler nå på godkjente partnerkilder og bygger motoren som skal hente produkter, følge prisutvikling og finne de mest interessante prisfallene.</p><div className="launch-box"><div className="launch-icon">✦</div><div><strong>DealRadar åpner snart</strong><span>Følg med mens vi gjør klar de første ekte dealene.</span></div></div><small>Affiliate-lenker vil alltid være tydelig merket. DealRadar skal være en tjeneste du kan stole på.</small></div><div className="phone-wrap"><div className="floating bell">✦</div><div className="floating percent">%</div><div className="phone"><div className="phone-top">◉ DealRadar <span>→</span></div><div className="phone-flame">✦</div><strong>Ny toppdeal funnet!</strong><p>Eksempel på fremtidig varsel</p><div className="phone-price">1 990 kr <span>−28%</span></div><button type="button">Se dealen →</button></div></div></section>
+        <section className="alerts" id="launch"><div className="alert-copy"><span className="pill">LIVE</span><h2>Finn deals som faktisk er gode.</h2><p>DealRadar kobler på godkjente partnerkilder og analyserer produkter etter pris, historikk, sammenligning og tilgjengelighet.</p><div className="launch-box"><div className="launch-icon">✦</div><div><strong>Se dagens deals</strong><span>Produkter som passerer DealRadar-motoren vises på deals-siden.</span></div></div><small>Affiliate-lenker vil alltid være tydelig merket. DealRadar skal være en tjeneste du kan stole på.</small></div><div className="phone-wrap"><div className="floating bell">✦</div><div className="floating percent">%</div><div className="phone"><div className="phone-top">◉ DealRadar <span>→</span></div><div className="phone-flame">✦</div><strong>Ny toppdeal funnet!</strong><p>Eksempel på fremtidig varsel</p><div className="phone-price">1 990 kr <span>−28%</span></div><a href="/deals">Se deals →</a></div></div></section>
       </main>
 
-      <footer className="footer" id="about"><div className="footer-brand"><span className="brandmark">◉</span><div><b>DealRadar</b><p>Vi finner deals som faktisk er gode.<br />Basert på data. Ikke syns.</p></div></div><div className="footer-links"><a href="#how">Slik fungerer det</a><a href="#categories">Kategorier</a><a href="/personvern">Personvern</a><a href="/affiliate">Affiliate-disclosure</a><a href="mailto:hei@dealradar.no">Kontakt</a></div><div className="copyright">© 2026 DealRadar.no<br />Alle rettigheter reservert.</div></footer>
+      <footer className="footer" id="about"><div className="footer-brand"><span className="brandmark">◉</span><div><b>DealRadar</b><p>Vi finner deals som faktisk er gode.<br />Basert på data. Ikke syns.</p></div></div><div className="footer-links"><a href="/deals">Alle deals</a><a href="#how">Slik fungerer det</a><a href="#categories">Kategorier</a><a href="/personvern">Personvern</a><a href="/affiliate">Affiliate-disclosure</a><a href="mailto:hei@dealradar.no">Kontakt</a></div><div className="copyright">© 2026 DealRadar.no<br />Alle rettigheter reservert.</div></footer>
     </div>
   );
 }
