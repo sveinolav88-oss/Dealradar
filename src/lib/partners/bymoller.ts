@@ -47,3 +47,6 @@ export async function getByMollerDeals() {
     }
   })
 }
+
+// Backwards-compatible alias used by the deals API.
+export const getBymollerDeals = getByMollerDeals
