@@ -1,6 +1,13 @@
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import DealStyles from './deal-styles';
 import { getAllPartnerDeals } from '../../src/lib/all-partner-deals';
+
+export const metadata: Metadata = {
+  title: 'Dagens deals – ekte prisfall og DealRadar Score',
+  description: 'Se produkter som passerer DealRadars terskel basert på pris, tilgjengelighet og dokumenterte datapunkter fra aktive partnerfeeds.',
+  alternates: { canonical: '/deals' },
+};
 
 const money = new Intl.NumberFormat('nb-NO', { style: 'currency', currency: 'NOK', maximumFractionDigits: 0 });
 
@@ -17,7 +24,7 @@ export default async function DealsPage() {
   return <><DealStyles /><main className="deals-page">
     <header className="deals-header"><Link href="/" className="deals-brand"><span className="brandmark">◉</span>DealRadar</Link><div className="deals-nav"><Link href="/">Forsiden</Link><Link href="/deals">Alle deals</Link><Link href="/#categories">Kategorier</Link></div></header>
 
-    <section className="deals-hero"><div><span className="eyebrow light">DEALRADAR · LIVE</span><h1>Deals som tåler et nærmere blikk.</h1><p>Vi analyserer ekte produktdata fra {result.partnerCount} godkjente partnerprogrammer og løfter frem produktene som faktisk passerer DealRadar-motoren.</p></div><div className="method-card"><span>SCORING</span><strong>Pris + førpris + tilgjengelighet</strong><small>Kun godkjente affiliateprogrammer kan publiseres med affiliate-lenke.</small></div></section>
+    <section className="deals-hero"><div><span className="eyebrow light">DEALRADAR · LIVE</span><h1>Deals som tåler et nærmere blikk.</h1><p>Vi analyserer ekte produktdata fra {result.partnerCount} aktive partnerprogrammer og løfter frem produktene som faktisk passerer DealRadar-motoren.</p></div><div className="method-card"><span>SCORING</span><strong>Pris + referanse + tilgjengelighet</strong><small>Kun produkter fra godkjente partnerprogrammer med gyldig tracking kan publiseres som affiliate-deals.</small></div></section>
 
     <section className="deal-list-wrap"><div className="deal-list-head"><div><span className="section-kicker">LIVE PARTNERFEEDS</span><h2>{publishable.length ? 'De sterkeste dealene akkurat nå' : 'Vi leter etter de sterke dealene'}</h2></div><span className="demo-badge">{result.successfulFeeds.length}/{result.partnerCount} feeds aktive</span></div>
       {result.errors.length > 0 && <div className="data-note"><div className="data-note-icon">!</div><div><h2>Noen produktfeeds svarer ikke akkurat nå.</h2><p>{result.errors.map((error) => error.merchant).join(', ')} er midlertidig utilgjengelig. De andre feedene fortsetter å fungere.</p></div></div>}
