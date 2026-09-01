@@ -91,7 +91,10 @@ export function buildPartnerAdsAffiliateUrl(template: string, productUrl: string
 export async function fetchPartnerAdsFeed(feedUrl: string, merchant: string): Promise<FeedProduct[]> {
   if (!feedUrl.startsWith('https://')) throw new Error('Partner-ads feed URL must use HTTPS')
 
-  const response = await fetch(feedUrl, { next: { revalidate: 3600 } })
+  const response = await fetch(feedUrl, {
+    cache: 'no-store',
+    signal: AbortSignal.timeout(10000),
+  })
   if (!response.ok) throw new Error(`Partner-ads feed returned HTTP ${response.status}`)
 
   const xml = await response.text()
