@@ -67,6 +67,27 @@ export function parsePartnerAdsXml(xml: string, merchant: string): FeedProduct[]
   return products
 }
 
+/**
+ * Creates a Partner-ads deeplink from an actual link template supplied by
+ * Partner-ads. DealRadar never guesses the Partner-ads tracking domain or IDs.
+ * The template should be copied from Partner-ads' generated PRODUCT/text link.
+ */
+export function buildPartnerAdsAffiliateUrl(template: string, productUrl: string, uid?: string) {
+  if (!template || !productUrl) return null
+
+  try {
+    const trackingUrl = new URL(template)
+    const destination = new URL(productUrl)
+
+    trackingUrl.searchParams.set('htmlurl', destination.toString())
+    if (uid) trackingUrl.searchParams.set('uid', uid)
+
+    return trackingUrl.toString()
+  } catch {
+    return null
+  }
+}
+
 export async function fetchPartnerAdsFeed(feedUrl: string, merchant: string): Promise<FeedProduct[]> {
   if (!feedUrl.startsWith('https://')) throw new Error('Partner-ads feed URL must use HTTPS')
 
