@@ -34,7 +34,35 @@ export default async function DealDetail({
     .filter((item) => item.id !== deal.id && item.category === deal.category)
     .slice(0, 3);
 
+  const canonicalPath = `/deals/${slugify(deal.name)}?id=${encodeURIComponent(deal.id)}`;
+  const productSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'Product',
+    name: deal.name,
+    category: deal.category,
+    image: deal.imageUrl ? [deal.imageUrl] : undefined,
+    offers: {
+      '@type': 'Offer',
+      url: `https://dealradar.no${canonicalPath}`,
+      priceCurrency: 'NOK',
+      price: deal.currentPrice,
+      availability: deal.inStock ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
+      seller: { '@type': 'Organization', name: deal.merchant },
+    },
+  };
+  const breadcrumbSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'DealRadar', item: 'https://dealradar.no/' },
+      { '@type': 'ListItem', position: 2, name: 'Deals', item: 'https://dealradar.no/deals' },
+      { '@type': 'ListItem', position: 3, name: deal.name, item: `https://dealradar.no${canonicalPath}` },
+    ],
+  };
+
   return <><DealStyles/><main className="detail-page">
+    <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(productSchema) }} />
+    <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
     <header className="deals-header">
       <Link href="/" className="deals-brand"><span className="brandmark">◉</span>DealRadar</Link>
       <Link href="/deals" className="back-link">← Alle deals</Link>
