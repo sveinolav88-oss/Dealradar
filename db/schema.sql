@@ -10,6 +10,8 @@ create table if not exists stores (
   created_at timestamptz not null default now()
 );
 
+create unique index if not exists stores_name_network_unique on stores(name, network);
+
 create table if not exists products (
   id uuid primary key default gen_random_uuid(),
   external_id text,
@@ -23,6 +25,7 @@ create table if not exists products (
 );
 
 create unique index if not exists products_ean_unique on products(ean) where ean is not null;
+create unique index if not exists products_external_id_unique on products(external_id) where external_id is not null;
 
 create table if not exists offers (
   id uuid primary key default gen_random_uuid(),
