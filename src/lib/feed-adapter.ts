@@ -1,5 +1,7 @@
 export type FeedProduct = {
   id: string
+  ean?: string | null
+  brand?: string | null
   name: string
   merchant: string
   category: string
@@ -20,6 +22,11 @@ export interface ProductFeedAdapter {
   fetchProducts(): Promise<FeedProduct[]>
 }
 
+function normalizeEan(value: unknown) {
+  const digits = String(value ?? '').replace(/\D/g, '')
+  return digits.length >= 8 && digits.length <= 14 ? digits : null
+}
+
 export function normalizeFeedProduct(raw: Record<string, unknown>): FeedProduct | null {
   const id = String(raw.id ?? raw.productId ?? '').trim()
   const name = String(raw.name ?? raw.productName ?? '').trim()
@@ -31,6 +38,8 @@ export function normalizeFeedProduct(raw: Record<string, unknown>): FeedProduct 
 
   return {
     id,
+    ean: normalizeEan(raw.ean ?? raw.EAN ?? raw.ean13 ?? raw.gtin),
+    brand: raw.brand == null ? null : String(raw.brand).trim() || null,
     name,
     merchant,
     category,
