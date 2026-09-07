@@ -23,9 +23,15 @@ function first(node: XmlNode, keys: string[]) {
   return ''
 }
 
+function normalizeEan(value: string) {
+  const digits = value.replace(/\D/g, '')
+  return digits.length >= 8 && digits.length <= 14 ? digits : null
+}
+
 /**
  * Small dependency-free parser for the common Partner-ads product-feed shape.
- * It deliberately maps only fields DealRadar needs; unknown XML fields are ignored.
+ * It maps identity fields when the feed exposes them so DealRadar can match
+ * the same product across multiple stores.
  */
 export function parsePartnerAdsXml(xml: string, merchant: string): FeedProduct[] {
   const products: FeedProduct[] = []
@@ -37,6 +43,8 @@ export function parsePartnerAdsXml(xml: string, merchant: string): FeedProduct[]
     for (const match of fields) node[match[1].toLowerCase()] = match[2]
 
     const id = first(node, ['id', 'productid', 'vareid', 'sku'])
+    const ean = normalizeEan(first(node, ['ean', 'ean13', 'gtin', 'barcode', 'strekkode']))
+    const brand = first(node, ['brand', 'brandname', 'merke']) || null
     const name = first(node, ['name', 'productname', 'varenavn', 'title'])
     const category = first(node, ['category', 'categoryname', 'kategorinavn', 'kategori']) || 'other'
     const currentPrice = Number(first(node, ['nypris', 'price', 'currentprice']).replace(/[^0-9,.-]/g, '').replace(',', '.'))
@@ -52,6 +60,8 @@ export function parsePartnerAdsXml(xml: string, merchant: string): FeedProduct[]
 
     products.push({
       id,
+      ean,
+      brand,
       name,
       merchant,
       category,
