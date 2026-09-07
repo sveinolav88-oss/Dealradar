@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
+import type { Metadata } from 'next';
 import DealStyles from '../deal-styles';
 import { getAllPartnerDeals } from '../../../src/lib/all-partner-deals';
 
@@ -11,6 +12,47 @@ function slugify(value: string) {
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
+
+export async function generateMetadata({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ slug: string }>;
+  searchParams: Promise<{ id?: string }>;
+}): Promise<Metadata> {
+  const [{ slug }, { id }] = await Promise.all([params, searchParams]);
+  const result = await getAllPartnerDeals();
+  const deal = result.deals.find((item) => item.id === id || slugify(item.name) === slug);
+  if (!deal) return { title: 'Deal ikke funnet | DealRadar' };
+
+  const discount = deal.referencePrice && deal.referencePrice > deal.currentPrice
+    ? Math.round((1 - deal.currentPrice / deal.referencePrice) * 100)
+    : 0;
+  const title = `${deal.name} – ${money.format(deal.currentPrice)} | DealRadar`;
+  const description = discount > 0
+    ? `${deal.name} hos ${deal.merchant}. Nå ${money.format(deal.currentPrice)}, ${discount}% under oppgitt referansepris. DealRadar Score ${deal.score.score}/100.`
+    : `${deal.name} hos ${deal.merchant}. Nå ${money.format(deal.currentPrice)}. DealRadar Score ${deal.score.score}/100.`;
+  const canonical = `https://dealradar.no/deals/${slugify(deal.name)}?id=${encodeURIComponent(deal.id)}`;
+
+  return {
+    title,
+    description,
+    alternates: { canonical },
+    openGraph: {
+      title,
+      description,
+      url: canonical,
+      type: 'website',
+      images: deal.imageUrl ? [{ url: deal.imageUrl, alt: deal.name }] : undefined,
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
+      images: deal.imageUrl ? [deal.imageUrl] : undefined,
+    },
+  };
+}
 
 export default async function DealDetail({
   params,
