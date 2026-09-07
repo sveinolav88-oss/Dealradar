@@ -57,11 +57,24 @@ export async function persistDealSnapshot(deals: FeedProduct[], network = 'partn
         observedAt: row.observed_at,
       }))
 
+      const competitorRows = await client.query<{ price: string }>(
+        `select o.price
+         from offers o
+         join stores s on s.id = o.store_id
+         where o.product_id = $1
+           and o.store_id <> $2
+           and o.stock = 'in_stock'
+           and o.last_seen_at >= now() - interval '7 days'
+         order by o.price asc`,
+        [product.id, store.id],
+      )
+
       const score = calculateDealScore({
         currentPrice: deal.currentPrice,
         referencePrice: deal.referencePrice,
         history30: points.filter((point) => Date.now() - new Date(point.observedAt).getTime() <= 30 * 86400000),
         history90: points,
+        competitorPrices: competitorRows.rows.map((row) => Number(row.price)).filter(Number.isFinite),
         inStock: deal.inStock,
       })
 
@@ -120,16 +133,35 @@ async function upsertStore(client: PoolClient, name: string, network: string) {
 }
 
 async function upsertProduct(client: PoolClient, deal: FeedProduct, externalId: string) {
+  if (deal.ean) {
+    const byEan = await client.query<{ id: string }>(
+      `select id from products where ean = $1 limit 1`,
+      [deal.ean],
+    )
+    if (byEan.rows[0]) {
+      const updated = await client.query<{ id: string }>(
+        `update products
+         set brand = coalesce($2, brand), name = $3, category = $4, image_url = $5, updated_at = now()
+         where id = $1
+         returning id`,
+        [byEan.rows[0].id, deal.brand ?? null, deal.name, deal.category, deal.imageUrl ?? null],
+      )
+      return updated.rows[0]
+    }
+  }
+
   const result = await client.query<{ id: string }>(
-    `insert into products (external_id, name, category, image_url, updated_at)
-     values ($1, $2, $3, $4, now())
+    `insert into products (external_id, ean, brand, name, category, image_url, updated_at)
+     values ($1, $2, $3, $4, $5, $6, now())
      on conflict (external_id) do update set
+       ean = coalesce(excluded.ean, products.ean),
+       brand = coalesce(excluded.brand, products.brand),
        name = excluded.name,
        category = excluded.category,
        image_url = excluded.image_url,
        updated_at = now()
      returning id`,
-    [externalId, deal.name, deal.category, deal.imageUrl ?? null],
+    [externalId, deal.ean ?? null, deal.brand ?? null, deal.name, deal.category, deal.imageUrl ?? null],
   )
   return result.rows[0]
 }
